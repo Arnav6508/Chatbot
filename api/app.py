@@ -1,15 +1,17 @@
 from fastapi import FastAPI
 from langchain.prompts import ChatPromptTemplate
-# from langchain.chat_models import ChatOpenAI
 from langserve import add_routes
 import uvicorn
 import os
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
 from dotenv import load_dotenv
 load_dotenv('../.env')
 
 
-os.environ['LANGCHAIN_API_KEY'] = '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'
+with open('lang_api_key.txt', 'r') as file:
+    LANGCHAIN_API_KEY = file.read()
+
+os.environ['LANGCHAIN_API_KEY'] = LANGCHAIN_API_KEY
 
 app = FastAPI(
     title = 'Langchain server',
@@ -17,7 +19,7 @@ app = FastAPI(
     description = 'A simple API server'
 )
 
-llm = Ollama(model = 'llama2')
+llm = OllamaLLM(model = 'llama2')
 
 prompt1 = ChatPromptTemplate.from_template('Write essay on {topic} in 50 words')
 prompt2 = ChatPromptTemplate.from_template('Write poem on {topic} in 50 words')
